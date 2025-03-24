@@ -13,6 +13,14 @@ return new class extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
+            $table->string('title', 50);
+            $table->string('description', 500);
+            $table->integer('priority');
+            $table->integer('status');
+            $table->foreignId('user_id');
+            $table->foreignId('category_id');
+            $table->foreignId('label_id');
+            $table->foreignId('file_id')->nullable();
             $table->timestamps();
         });
     }
