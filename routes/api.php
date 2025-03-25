@@ -11,4 +11,5 @@ Route::get('/user', function (Request $request) {
 Route::controller(TicketController::class)->group(function () {
     Route::get('/tickets', 'getAllTickets');
     Route::get('/tickets/{ticketId}', 'getTicket');
+    Route::post('/tickets', 'createTicket');
 });
