@@ -8,50 +8,53 @@ use App\Models\Ticket;
 
 class TicketController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public Ticket $ticket;
+
+    public function __construct(Ticket $ticket)
     {
-        //
+        $this->ticket = $ticket;
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function createTicket()
     {
         //
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Get all instances of the specified resource.
      */
-    public function store(StoreTicketRequest $request)
+    public function getAllTickets()
     {
-        //
+        $tickets = Ticket::all();
+
+        return response()->json([
+            'message' => 'Tickets retrieved successfully.',
+            'success' => true,
+            'data' => $tickets
+        ]);
     }
 
     /**
-     * Display the specified resource.
+     * Get the specified resource.
      */
-    public function show(Ticket $ticket)
+    public function getTicket(int $ticketId)
     {
-        //
+        $ticket = $this->ticket->find($ticketId);
+
+        return response()->json([
+            'message' => 'Ticket retrieved successfully.',
+            'success' => true,
+            'data' => $ticket
+        ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Ticket $ticket)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateTicketRequest $request, Ticket $ticket)
+    public function editTicket(Ticket $ticket)
     {
         //
     }
@@ -59,7 +62,7 @@ class TicketController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Ticket $ticket)
+    public function deleteTicket(Ticket $ticket)
     {
         //
     }
