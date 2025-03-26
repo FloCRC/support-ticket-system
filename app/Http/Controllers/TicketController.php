@@ -18,7 +18,7 @@ class TicketController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Create a new ticket.
      */
     public function createTicket(Request $request): JsonResponse
     {
@@ -48,13 +48,13 @@ class TicketController extends Controller
         }
 
         return response()->json([
-            'message' => 'Ticket not created.',
+            'message' => 'An error occurred. Ticket not created.',
             'success' => false,
         ], 500);
     }
 
     /**
-     * Get all instances of the specified resource.
+     * Get all tickets.
      */
     public function getAllTickets(): JsonResponse
     {
@@ -75,7 +75,7 @@ class TicketController extends Controller
     }
 
     /**
-     * Get the specified resource.
+     * Get the specified ticket.
      */
     public function getTicket(int $ticketId): JsonResponse
     {
@@ -96,7 +96,7 @@ class TicketController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Edit the specified ticket.
      */
     public function editTicket(int $ticketId, Request $request): JsonResponse
     {
@@ -138,11 +138,4 @@ class TicketController extends Controller
         ], 500);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-//    public function deleteTicket(Ticket $ticket): JsonResponse
-//    {
-//        //
-//    }
 }
