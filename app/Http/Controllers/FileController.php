@@ -5,62 +5,41 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreFileRequest;
 use App\Http\Requests\UpdateFileRequest;
 use App\Models\File;
+use Illuminate\Http\JsonResponse;
 
 class FileController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreFileRequest $request)
-    {
-        //
-    }
+//    public function createFile(): JsonResponse
+//    {
+//
+//    }
 
     /**
      * Display the specified resource.
      */
-    public function show(File $file)
-    {
-        //
-    }
+//    public function getFile(File $file): JsonResponse
+//    {
+//        //
+//    }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(File $file)
-    {
-        //
-    }
+//    public function EditFile(File $file): JsonResponse
+//    {
+//        //
+//    }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateFileRequest $request, File $file)
-    {
-        //
-    }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(File $file)
-    {
-        //
-    }
+//    public function deleteFile(File $file): JsonResponse
+//    {
+//        //
+//    }
 }

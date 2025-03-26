@@ -12,4 +12,5 @@ Route::controller(TicketController::class)->group(function () {
     Route::get('/tickets', 'getAllTickets');
     Route::get('/tickets/{ticketId}', 'getTicket');
     Route::post('/tickets', 'createTicket');
+    Route::put('/tickets/{ticketId}', 'editTicket');
 });

@@ -44,13 +44,13 @@ class TicketController extends Controller
             return response()->json([
                 'message' => 'Ticket successfully created.',
                 'success' => true,
-            ]);
+            ], 201);
         }
 
         return response()->json([
             'message' => 'Ticket not created.',
             'success' => false,
-        ]);
+        ], 500);
     }
 
     /**
@@ -58,7 +58,14 @@ class TicketController extends Controller
      */
     public function getAllTickets(): JsonResponse
     {
-        $tickets = Ticket::all();
+        $tickets = $this->ticket->all();
+
+        if ($tickets->isEmpty()) {
+            return response()->json([
+                'message' => 'No tickets found.',
+                'success' => false,
+            ], 404);
+        }
 
         return response()->json([
             'message' => 'Tickets retrieved successfully.',
@@ -74,6 +81,13 @@ class TicketController extends Controller
     {
         $ticket = $this->ticket->find($ticketId);
 
+        if (!$ticket) {
+            return response()->json([
+                'message' => 'Ticket not found.',
+                'success' => false,
+            ], 404);
+        }
+
         return response()->json([
             'message' => 'Ticket retrieved successfully.',
             'success' => true,
@@ -84,16 +98,51 @@ class TicketController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function editTicket(Ticket $ticket)
+    public function editTicket(int $ticketId, Request $request): JsonResponse
     {
-        //
+        $request->validate([
+            'title' => 'string|max:50',
+            'description' => 'string|max:500',
+            'priority' => 'integer|between:1,3',
+            'status' => 'integer|between:1,3',
+            'category_id' => 'integer|exists:categories,id',
+            'label_id' => 'integer|exists:labels,id',
+        ]);
+
+        $ticket = $this->ticket->find($ticketId);
+
+        if (!$ticket) {
+            return response()->json([
+                'message' => 'Ticket not found.',
+                'success' => false,
+            ], 404);
+        }
+
+        $ticket->title = $request->title ?? $ticket->title;
+        $ticket->description = $request->description ?? $ticket->description;
+        $ticket->priority = $request->priority ?? $ticket->priority;
+        $ticket->status = $request->status ?? $ticket->status;
+        $ticket->category_id = $request->category_id ?? $ticket->category_id;
+        $ticket->label_id = $request->label_id ?? $ticket->label_id;
+
+        if ($ticket->save()) {
+            return response()->json([
+                'message' => 'Ticket successfully updated.',
+                'success' => true,
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'An error occurred. Ticket not updated.',
+            'success' => false,
+        ], 500);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function deleteTicket(Ticket $ticket)
-    {
-        //
-    }
+//    public function deleteTicket(Ticket $ticket): JsonResponse
+//    {
+//        //
+//    }
 }
