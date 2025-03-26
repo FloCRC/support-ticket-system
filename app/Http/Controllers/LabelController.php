@@ -46,18 +46,44 @@ class LabelController extends Controller
     /**
      * Get all labels.
      */
-//    public function getAllLabels(Label $label): JsonResponse
-//    {
-//        //
-//    }
+    public function getAllLabels(): JsonResponse
+    {
+        $labels = $this->label->all();
+
+        if ($labels->isEmpty()) {
+            return response()->json([
+                'message' => 'No labels found.',
+                'success' => false,
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => "Labels successfully retrieved.",
+            'success' => true,
+            'data' => $labels
+        ]);
+    }
 
     /**
      * Display the specified label.
      */
-//    public function getLabel(Label $label): JsonResponse
-//    {
-//        //
-//    }
+    public function getLabel(int $labelId): JsonResponse
+    {
+        $label = $this->label->find($labelId);
+
+        if (!$label) {
+            return response()->json([
+                'message' => 'Label not found.',
+                'success' => false,
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => "Label successfully retrieved.",
+            'success' => true,
+            'data' => $label
+        ]);
+    }
 
     /**
      * Edit the specified label.
