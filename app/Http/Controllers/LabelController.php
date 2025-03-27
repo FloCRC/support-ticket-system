@@ -88,10 +88,35 @@ class LabelController extends Controller
     /**
      * Edit the specified label.
      */
-//    public function editLabel(Label $label): JsonResponse
-//    {
-//        //
-//    }
+    public function editLabel(int $labelId, Request $request): JsonResponse
+    {
+        $label = $this->label->find($labelId);
+
+        if (!$label) {
+            return response()->json([
+                'message' => 'Label not found.',
+                'success' => false,
+            ], 404);
+        }
+
+        $request->validate([
+            'name' => 'required|string|max:50',
+        ]);
+
+        $label->name = $request->name;
+
+        if ($label->save()) {
+            return response()->json([
+                'message' => "Label successfully edited.",
+                'success' => true
+            ]);
+        }
+
+        return response()->json([
+            'message' => "Label successfully updated.",
+            'success' => true,
+        ]);
+    }
 
     /**
      * Remove the specified label.

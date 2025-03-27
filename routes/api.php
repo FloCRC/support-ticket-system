@@ -20,4 +20,5 @@ Route::controller(LabelController::class)->group(function () {
     Route::get('/labels', 'getAllLabels');
     Route::get('/labels/{labelId}', 'getLabel');
     Route::post('/labels', 'createLabel');
+    Route::put('/labels/{labelId}', 'editLabel');
 });
