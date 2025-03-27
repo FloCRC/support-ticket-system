@@ -138,4 +138,27 @@ class TicketController extends Controller
         ], 500);
     }
 
+    public function deleteTicket(int $ticketId): JsonResponse
+    {
+        $ticket = $this->ticket->find($ticketId);
+
+        if (!$ticket) {
+            return response()->json([
+                'message' => 'Ticket not found.',
+                'success' => false,
+            ], 404);
+        }
+
+        if ($ticket->delete()) {
+            return response()->json([
+                'message' => 'Ticket successfully deleted.',
+                'success' => true,
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'An error occurred. Ticket not deleted.',
+            'success' => false,
+        ], 500);
+    }
 }

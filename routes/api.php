@@ -14,6 +14,7 @@ Route::controller(TicketController::class)->group(function () {
     Route::get('/tickets/{ticketId}', 'getTicket');
     Route::post('/tickets', 'createTicket');
     Route::put('/tickets/{ticketId}', 'editTicket');
+    Route::delete('/tickets/{ticketId}', 'deleteTicket');
 });
 
 Route::controller(LabelController::class)->group(function () {
