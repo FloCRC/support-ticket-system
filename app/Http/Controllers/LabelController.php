@@ -113,16 +113,35 @@ class LabelController extends Controller
         }
 
         return response()->json([
-            'message' => "Label successfully updated.",
-            'success' => true,
-        ]);
+            'message' => "An error occurred. Label not updated.",
+            'success' => false,
+        ], 500);
     }
 
     /**
      * Remove the specified label.
      */
-//    public function deleteLabel(Label $label): JsonResponse
-//    {
-//        //
-//    }
+    public function deleteLabel(int $labelId): JsonResponse
+    {
+        $label = $this->label->find($labelId);
+
+        if (!$label) {
+            return response()->json([
+                'message' => 'Label not found.',
+                'success' => false,
+            ], 404);
+        }
+
+        if ($label->delete()) {
+            return response()->json([
+                'message' => "Label successfully deleted.",
+                'success' => true
+            ]);
+        }
+
+        return response()->json([
+            'message' => "An error occurred. Label not deleted.",
+            'success' => false,
+        ], 500);
+    }
 }
