@@ -2,15 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreLabelRequest;
-use App\Http\Requests\UpdateLabelRequest;
 use App\Models\Label;
 use Illuminate\Http\JsonResponse;
 use \Illuminate\Http\Request;
 
 class LabelController extends Controller
 {
-
     public Label $label;
 
     public function __construct(Label $label)
