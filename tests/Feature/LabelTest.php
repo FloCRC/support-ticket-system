@@ -34,4 +34,23 @@ class LabelTest extends TestCase
 
         $this->assertDatabaseHas('labels', $testData);
     }
+
+    public function test_createLabel_fail(): void
+    {
+        Label::factory()->create();
+
+        $testData = [];
+
+        $response = $this->postJson('api/labels', $testData);
+
+        $response->assertStatus(422)
+            ->assertInvalid([
+                'name' => 'The name field is required',
+            ]);
+
+        $this->assertDatabaseMissing('labels', [
+            'name' => 'label name',
+        ]);
+    }
+
 }
