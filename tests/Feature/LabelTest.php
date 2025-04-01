@@ -53,4 +53,40 @@ class LabelTest extends TestCase
         ]);
     }
 
+    public function test_editLabel_success(): void
+    {
+        Label::factory()->create();
+
+        $testData = [
+            'name' => 'label name',
+        ];
+
+        $response = $this->putJson('api/labels/1', $testData);
+
+        $response->assertOk()
+            ->assertJson(function (AssertableJson $json) {
+                $json->hasAll(['message', 'success']);
+            });
+
+        $this->assertDatabaseHas('labels', $testData);
+    }
+
+    public function test_editLabel_fail(): void
+    {
+        Label::factory()->create();
+
+        $testData = [];
+
+        $response = $this->putJson('api/labels/1', $testData);
+
+        $response->assertStatus(422)
+            ->assertInvalid([
+                'name' => 'The name field is required',
+            ]);
+
+        $this->assertDatabaseMissing('labels', [
+            'name' => 'label name',
+        ]);
+    }
+
 }
