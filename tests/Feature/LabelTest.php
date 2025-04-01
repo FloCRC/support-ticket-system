@@ -14,9 +14,6 @@ class LabelTest extends TestCase
 
     use DatabaseMigrations;
 
-    /**
-     * A basic feature test example.
-     */
     public function test_createLabel_success(): void
     {
         $testData = [
@@ -51,7 +48,7 @@ class LabelTest extends TestCase
 
     public function test_editLabel_success(): void
     {
-        $label = Label::factory()->create();
+        Label::factory()->create();
 
         $testData = [
             'name' => 'label name',
@@ -117,6 +114,58 @@ class LabelTest extends TestCase
         $this->assertDatabaseHas('labels', [
             'name' => $label->name,
         ]);
+    }
+
+    public function test_getAllLabels_success(): void
+    {
+        Label::factory()->count(5)->create();
+
+        $response = $this->getJson('api/labels');
+
+        $response->assertOk()
+            ->assertJson(function (AssertableJson $json) {
+                $json->hasAll(['message', 'success', 'data'])
+                    ->has('data', 5, function (AssertableJson $json) {
+                        $json->whereAllType([
+                            'id' => 'integer',
+                            'name' => 'string',
+                            'created_at' => 'string',
+                            'updated_at' => 'string',
+                            ]);
+                    });
+            });
+    }
+
+    public function test_getLabel_success(): void
+    {
+        Label::factory()->create();
+
+        $response = $this->getJson('api/labels/1');
+
+        $response->assertOk()
+            ->assertJson(function (AssertableJson $json) {
+                $json->hasAll(['message', 'success', 'data'])
+                    ->has('data', function (AssertableJson $json) {
+                        $json->whereAllType([
+                            'id' => 'integer',
+                            'name' => 'string',
+                            'created_at' => 'string',
+                            'updated_at' => 'string',
+                        ]);
+                    });
+            });
+    }
+
+    public function test_getLabel_fail(): void
+    {
+        Label::factory()->create();
+
+        $response = $this->getJson('api/labels/2');
+
+        $response->assertStatus(404)
+            ->assertJson(function (AssertableJson $json) {
+                $json->hasAll(['message', 'success']);
+            });
     }
 
 }
