@@ -19,8 +19,6 @@ class LabelTest extends TestCase
      */
     public function test_createLabel_success(): void
     {
-        Label::factory()->create();
-
         $testData = [
             'name' => 'label name',
         ];
@@ -37,8 +35,6 @@ class LabelTest extends TestCase
 
     public function test_createLabel_fail(): void
     {
-        Label::factory()->create();
-
         $testData = [];
 
         $response = $this->postJson('api/labels', $testData);
@@ -55,7 +51,7 @@ class LabelTest extends TestCase
 
     public function test_editLabel_success(): void
     {
-        Label::factory()->create();
+        $label = Label::factory()->create();
 
         $testData = [
             'name' => 'label name',
@@ -68,12 +64,14 @@ class LabelTest extends TestCase
                 $json->hasAll(['message', 'success']);
             });
 
-        $this->assertDatabaseHas('labels', $testData);
+        $this->assertDatabaseHas('labels', [
+            'name' => 'label name',
+        ]);
     }
 
     public function test_editLabel_fail(): void
     {
-        Label::factory()->create();
+        $label = Label::factory()->create();
 
         $testData = [];
 
@@ -84,8 +82,40 @@ class LabelTest extends TestCase
                 'name' => 'The name field is required',
             ]);
 
+        $this->assertDatabaseHas('labels', [
+            'name' => $label->name,
+        ]);
+    }
+
+    public function test_deleteLabel_success(): void
+    {
+        $label = Label::factory()->create();
+
+        $response = $this->deleteJson('api/labels/1');
+
+        $response->assertOk()
+            ->assertJson(function (AssertableJson $json) {
+                $json->hasAll(['message', 'success']);
+            });
+
         $this->assertDatabaseMissing('labels', [
-            'name' => 'label name',
+            'name' => $label->name,
+        ]);
+    }
+
+    public function test_deleteLabel_fail(): void
+    {
+        $label = Label::factory()->create();
+
+        $response = $this->deleteJson('api/labels/2');
+
+        $response->assertStatus(404)
+            ->assertJson(function (AssertableJson $json) {
+                $json->hasAll(['message', 'success']);
+            });
+
+        $this->assertDatabaseHas('labels', [
+            'name' => $label->name,
         ]);
     }
 
