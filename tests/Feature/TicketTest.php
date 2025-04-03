@@ -78,6 +78,7 @@ class TicketTest extends TestCase
 
         $testData = [
             'title' => 'new ticket title',
+            'status' => 2,
         ];
 
         $response = $this->putJson('api/tickets/1', $testData);
@@ -89,6 +90,7 @@ class TicketTest extends TestCase
 
         $this->assertDatabaseHas('tickets', [
             'title' => 'new ticket title',
+            'status' => 2,
         ]);
     }
 
@@ -100,6 +102,7 @@ class TicketTest extends TestCase
             'title' => 2,
             'description' => 3,
             'priority' => 7,
+            'status' => 0,
             'user_id' => 2,
             'category_id' => 4,
             'label_id' => 'label one',
@@ -112,6 +115,7 @@ class TicketTest extends TestCase
                 'title' => 'The title field must be a string',
                 'description' => 'The description field must be a string',
                 'priority' => 'The priority field must be between 1 and 3',
+                'status' => 'The status field must be between 1 and 3',
                 'category_id' => 'The selected category id is invalid',
                 'label_id' => 'The label id field must be an integer',
             ]);
@@ -151,6 +155,72 @@ class TicketTest extends TestCase
         $this->assertDatabaseHas('tickets', [
             'title' => $ticket->title,
         ]);
+    }
+
+    public function test_getAllTickets_success(): void
+    {
+        Ticket::factory()->count(5)->create();
+
+        $response = $this->getJson('api/tickets');
+
+        $response->assertOk()
+            ->assertJson(function (AssertableJson $json) {
+                $json->hasAll(['message', 'success', 'data'])
+                    ->has('data', 5, function (AssertableJson $json) {
+                        $json->whereAllType([
+                            'id' => 'integer',
+                            'title' => 'string',
+                            'description' => 'string',
+                            'priority' => 'integer',
+                            'status' => 'integer',
+                            'user_id' => 'integer',
+                            'category_id' => 'integer',
+                            'label_id' => 'integer',
+                            'file_id' => 'integer',
+                            'created_at' => 'string',
+                            'updated_at' => 'string',
+                        ]);
+                    });
+            });
+    }
+
+    public function test_getTicket_success(): void
+    {
+        Ticket::factory()->create();
+
+        $response = $this->getJson('api/tickets/1');
+
+        $response->assertOk()
+            ->assertJson(function (AssertableJson $json) {
+                $json->hasAll(['message', 'success', 'data'])
+                    ->has('data', function (AssertableJson $json) {
+                        $json->whereAllType([
+                            'id' => 'integer',
+                            'title' => 'string',
+                            'description' => 'string',
+                            'priority' => 'integer',
+                            'status' => 'integer',
+                            'user_id' => 'integer',
+                            'category_id' => 'integer',
+                            'label_id' => 'integer',
+                            'file_id' => 'integer',
+                            'created_at' => 'string',
+                            'updated_at' => 'string',
+                        ]);
+                    });
+            });
+    }
+
+    public function test_getTicket_fail(): void
+    {
+        Ticket::factory()->create();
+
+        $response = $this->getJson('api/tickets/2');
+
+        $response->assertStatus(404)
+            ->assertJson(function (AssertableJson $json) {
+                $json->hasAll(['message', 'success']);
+            });
     }
 
 }

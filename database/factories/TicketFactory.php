@@ -23,10 +23,11 @@ class TicketFactory extends Factory
             'title' => $this->faker->word(),
             'description' => $this->faker->paragraph(),
             'priority' => rand(1,3),
-            'status' => rand(1,3),
+            'status' => 1,
             'user_id' => User::factory(),
             'category_id' => Category::factory(),
             'label_id' => Label::factory(),
+            'file_id' => rand(1,10),
         ];
     }
 }
