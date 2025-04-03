@@ -121,4 +121,36 @@ class TicketTest extends TestCase
         ]);
     }
 
+    public function test_deleteTicket_success(): void
+    {
+        $ticket = Ticket::factory()->create();
+
+        $response = $this->deleteJson('api/tickets/1');
+
+        $response->assertOk()
+            ->assertJson(function (AssertableJson $json) {
+                $json->hasAll(['message', 'success']);
+            });
+
+        $this->assertDatabaseMissing('tickets', [
+            'title' => $ticket->title,
+        ]);
+    }
+
+    public function test_deleteTicket_fail(): void
+    {
+        $ticket = Ticket::factory()->create();
+
+        $response = $this->deleteJson('api/tickets/2');
+
+        $response->assertStatus(404)
+            ->assertJson(function (AssertableJson $json) {
+                $json->hasAll(['message', 'success']);
+            });
+
+        $this->assertDatabaseHas('tickets', [
+            'title' => $ticket->title,
+        ]);
+    }
+
 }
