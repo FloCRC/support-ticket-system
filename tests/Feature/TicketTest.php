@@ -42,4 +42,32 @@ class TicketTest extends TestCase
         $this->assertDatabaseHas('tickets', $testData);
     }
 
+    public function test_createTicket_fail(): void
+    {
+        User::factory()->create();
+        Label::factory()->create();
+
+        $testData = [
+            'description' => 'ticket description',
+            'priority' => 'one',
+            'user_id' => 1,
+            'category_id' => 1,
+            'label_id' => 1,
+        ];
+
+        $response = $this->postJson('api/tickets', $testData);
+
+        $response->assertStatus(422)
+            ->assertInvalid([
+                'title' => 'The title field is required',
+                'priority' => 'The priority field must be an integer',
+                'category_id' => 'The selected category id is invalid',
+            ]);
+
+        $this->assertDatabaseMissing('tickets', [
+            'name' => 'ticket name',
+        ]);
+    }
+
+
 }
