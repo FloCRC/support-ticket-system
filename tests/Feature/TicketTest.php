@@ -48,11 +48,11 @@ class TicketTest extends TestCase
         Label::factory()->create();
 
         $testData = [
-            'description' => 'ticket description',
+            'description' => true,
             'priority' => 'one',
-            'user_id' => 1,
+            'user_id' => 6,
             'category_id' => 1,
-            'label_id' => 1,
+            'label_id' => 'hi',
         ];
 
         $response = $this->postJson('api/tickets', $testData);
@@ -60,8 +60,11 @@ class TicketTest extends TestCase
         $response->assertStatus(422)
             ->assertInvalid([
                 'title' => 'The title field is required',
+                'description' => 'The description field must be a string',
                 'priority' => 'The priority field must be an integer',
+                'user_id' => 'The selected user id is invalid',
                 'category_id' => 'The selected category id is invalid',
+                'label_id' => 'The label id field must be an integer',
             ]);
 
         $this->assertDatabaseMissing('tickets', [
@@ -86,6 +89,35 @@ class TicketTest extends TestCase
 
         $this->assertDatabaseHas('tickets', [
             'title' => 'new ticket title',
+        ]);
+    }
+
+    public function test_editTicket_fail(): void
+    {
+        $ticket = Ticket::factory()->create();
+
+        $testData = [
+            'title' => 2,
+            'description' => 3,
+            'priority' => 7,
+            'user_id' => 2,
+            'category_id' => 4,
+            'label_id' => 'label one',
+        ];
+
+        $response = $this->putJson('api/tickets/1', $testData);
+
+        $response->assertStatus(422)
+            ->assertInvalid([
+                'title' => 'The title field must be a string',
+                'description' => 'The description field must be a string',
+                'priority' => 'The priority field must be between 1 and 3',
+                'category_id' => 'The selected category id is invalid',
+                'label_id' => 'The label id field must be an integer',
+            ]);
+
+        $this->assertDatabaseHas('tickets', [
+            'category_id' => $ticket->category_id,
         ]);
     }
 
