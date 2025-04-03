@@ -69,5 +69,24 @@ class TicketTest extends TestCase
         ]);
     }
 
+    public function test_editTicket_success(): void
+    {
+        Ticket::factory()->create();
+
+        $testData = [
+            'title' => 'new ticket title',
+        ];
+
+        $response = $this->putJson('api/tickets/1', $testData);
+
+        $response->assertOk()
+            ->assertJson(function (AssertableJson $json) {
+                $json->hasAll(['message', 'success']);
+            });
+
+        $this->assertDatabaseHas('tickets', [
+            'title' => 'new ticket title',
+        ]);
+    }
 
 }
